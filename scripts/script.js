@@ -36,7 +36,15 @@ const gameBoard = (function () {
   return { putMark, getMarkAtPos, clear, print };
 })();
 
+const createPlayer = (name, mark) => {
+  return { name, mark };
+}
+
 const gameController = (function () {
+  const playerOne = createPlayer('Artyom', 'X');
+  const playerTwo = createPlayer('Cooler Artyom', 'O');
+  let currentPlayer = playerOne;
+
   function renderGrid() {
     const container = document.createElement('div');
     container.setAttribute('class', 'container');
@@ -55,15 +63,23 @@ const gameController = (function () {
     });
   }
 
+  function toggleCurrentPlayer() {
+    if (currentPlayer.mark == playerOne.mark) {
+      currentPlayer = playerTwo;
+    } else {
+      currentPlayer = playerOne;
+    }
+  }
+
   function handleUserMove() {
     let [x, y] = this.id.replace(/"/g, "").split(' ');
     x = Number(x);
     y = Number(y);
     gameBoard.putMark(x, y, currentPlayer.mark);
     this.textContent = currentPlayer.mark;
+    toggleCurrentPlayer();
   }
   return { renderGrid };
 })();
 
 gameController.renderGrid();
-currentPlayer = { mark: 'X' };
