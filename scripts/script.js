@@ -36,4 +36,34 @@ const gameBoard = (function () {
   return { putMark, getMarkAtPos, clear, print };
 })();
 
+const gameController = (function () {
+  function renderGrid() {
+    const container = document.createElement('div');
+    container.setAttribute('class', 'container');
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        const boardItem = document.createElement('div');
+        boardItem.setAttribute('id', `"${i} ${j}"`);
+        boardItem.setAttribute('class', 'item');
+        boardItem.textContent = gameBoard.getMarkAtPos(i, j);
+        container.appendChild(boardItem);
+      }
+    }
+    document.body.appendChild(container);
+    document.querySelectorAll('div .item').forEach(button => {
+      button.addEventListener('click', handleUserMove);
+    });
+  }
 
+  function handleUserMove() {
+    let [x, y] = this.id.replace(/"/g, "").split(' ');
+    x = Number(x);
+    y = Number(y);
+    gameBoard.putMark(x, y, currentPlayer.mark);
+    this.textContent = currentPlayer.mark;
+  }
+  return { renderGrid };
+})();
+
+gameController.renderGrid();
+currentPlayer = { mark: 'X' };
