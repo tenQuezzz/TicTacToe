@@ -41,20 +41,34 @@ const createPlayer = (name, mark) => {
 }
 
 const gameController = (function () {
-  const playerOne = createPlayer('Artyom', 'X');
-  const playerTwo = createPlayer('Cooler Artyom', 'O');
-  let currentPlayer = playerOne;
+  let playerOne = null;
+  let playerTwo = null;
+  let currentPlayer = null;
+
+  function initGame() {
+    name = prompt('Player1, please your name: ');
+    playerOne = createPlayer(name, 'X');
+    name = prompt('Player2, please your name: ')
+    playerTwo = createPlayer(name, 'O');
+    currentPlayer = playerOne;
+  }
+
+  function renderCell(x, y) {
+    const cell = document.createElement('div');
+    cell.setAttribute('id', `"${x} ${y}"`);
+    cell.setAttribute('class', 'item');
+    cell.textContent = gameBoard.getMarkAtPos(x, y);
+    return cell;
+  }
 
   function renderGrid() {
+    initGame();
     const container = document.createElement('div');
     container.setAttribute('class', 'container');
     for (let i = 0; i < 3; i++) {
       for (let j = 0; j < 3; j++) {
-        const boardItem = document.createElement('div');
-        boardItem.setAttribute('id', `"${i} ${j}"`);
-        boardItem.setAttribute('class', 'item');
-        boardItem.textContent = gameBoard.getMarkAtPos(i, j);
-        container.appendChild(boardItem);
+        cell = renderCell(i, j);
+        container.appendChild(cell);
       }
     }
     document.body.appendChild(container);
@@ -73,13 +87,27 @@ const gameController = (function () {
 
   function handleUserMove() {
     let [x, y] = this.id.replace(/"/g, "").split(' ');
-    x = Number(x);
-    y = Number(y);
-    gameBoard.putMark(x, y, currentPlayer.mark);
+    gameBoard.putMark(Number(x), Number(y), currentPlayer.mark);
     this.textContent = currentPlayer.mark;
     toggleCurrentPlayer();
   }
-  return { renderGrid };
+
+  function clearUI() {
+    gameBoard.clear();
+    const board = document.querySelector('.container');
+    board.parentElement.removeChild(board);
+  }
+
+  function resetGame() {
+    currentPlayer = null;
+    playerOne = null;
+    playerTwo = null;
+    clearUI();
+    renderGrid();
+  }
+
+
+  return { renderGrid, resetGame };
 })();
 
 gameController.renderGrid();
