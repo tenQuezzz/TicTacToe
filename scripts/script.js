@@ -1,5 +1,5 @@
 const gameBoard = (function () {
-  let board = [
+  const board = [
     ['_', '_', '_'],
     ['_', '_', '_'],
     ['_', '_', '_']
@@ -65,14 +65,6 @@ const gameBoard = (function () {
     }
     return 'CONTINUE';
   }
-
-  // TODO: maybe just temporary method
-  function print() {
-    board.forEach((row) => {
-      console.log(row.join(' '));
-    })
-  }
-
   return { putMark, getMarkAtPos, clear, print, gameState };
 })();
 
