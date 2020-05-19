@@ -7,11 +7,15 @@ const gameBoard = (function () {
     ['_', '_', '_'],
     ['_', '_', '_']
   ]
+  let moveCount = 0;
+  const n = board.length;
 
   function putMark(x, y, mark) {
     if (board[x][y]) {
-      if (board[x][y] != '_') return;
+      if (board[x][y] != '_') return false;
       board[x][y] = mark;
+      moveCount++;
+      return true;
     }
   }
 
@@ -21,11 +25,49 @@ const gameBoard = (function () {
         board[i][j] = '_';
       }
     }
+    moveCount = 0;
   }
 
   function getMarkAtPos(x, y) {
     return board[x][y];
   }
+  // TODO
+  function gameState(x, y, mark) {
+    // x and y are positions of our last move, mark is X or O
+    // returns X wins or O wins or DRAW or CONTINUE
+    console.log(`x: ${x}`);
+    console.log(`y: ${y}`);
+    console.log(`mark: ${mark}`);
+    // check row
+    for (let i = 0; i < n; i++) {
+      if (board[x][i] != mark) break;
+      if (i == n - 1) return `${mark} WINS`;
+    }
+    // check col
+    for (let i = 0; i < n; i++) {
+      if (board[i][y] != mark) break;
+      if (i == n - 1) return `${mark} WINS`
+    }
+    // check diag
+    if (x == y) {
+      for (let i = 0; i < n; i++) {
+        if (board[i][i] != mark) break;
+        if (i == n - 1) return `{mark} WINS`
+      }
+    }
+    // check anti diag
+    if (x + y == n - 1) {
+      for (let i = 0; i < n; i++) {
+        if (board[i][n - i - 1] != mark) break;
+        if (i == n - 1) return `{mark WINS}`
+      }
+    }
+    if (moveCount == n * n - 1) {
+      return 'DRAW';
+    }
+    return 'CONTINUE';
+  }
+
   // TODO: maybe just temporary method
   function print() {
     board.forEach((row) => {
@@ -33,7 +75,7 @@ const gameBoard = (function () {
     })
   }
 
-  return { putMark, getMarkAtPos, clear, print };
+  return { putMark, getMarkAtPos, clear, print, gameState };
 })();
 
 const createPlayer = (name, mark) => {
@@ -87,9 +129,24 @@ const gameController = (function () {
 
   function handleUserMove() {
     let [x, y] = this.id.replace(/"/g, "").split(' ');
-    gameBoard.putMark(Number(x), Number(y), currentPlayer.mark);
-    this.textContent = currentPlayer.mark;
-    toggleCurrentPlayer();
+    let moveResult = gameBoard.putMark(Number(x), Number(y), currentPlayer.mark);
+    if (moveResult) {
+      this.textContent = currentPlayer.mark;
+      const state = gameBoard.gameState(Number(x), Number(y), currentPlayer.mark);
+
+      if (state === 'DRAW') {
+        alert("It's DRAW!");
+        resetGame();
+      } else if (state === 'CONTINUE') {
+        toggleCurrentPlayer();
+      } else if (state === `${playerOne.mark} WINS`) {
+        alert(`${playerOne.name} WINS!`);
+        resetGame();
+      } else {
+        alert(`${playerTwo.name} WINS!`);
+        resetGame();
+      }
+    }
   }
 
   function clearUI() {
