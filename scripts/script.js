@@ -160,7 +160,16 @@ const gameController = (function () {
     clearUI();
     renderGrid();
   }
-  return { renderGrid, resetGame };
+
+  function startGame() {
+    renderGrid();
+  }
+
+  return { startGame, resetGame };
 })();
 
-gameController.renderGrid();
+document.getElementById('start-game')
+  .addEventListener('click', gameController.startGame);
+
+document.getElementById('restart-game')
+  .addEventListener('click', gameController.resetGame);
