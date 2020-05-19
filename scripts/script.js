@@ -1,6 +1,3 @@
-// Board
-// put mark at specific cell
-// clean board (put '_' in all places)
 const gameBoard = (function () {
   let board = [
     ['_', '_', '_'],
@@ -31,13 +28,14 @@ const gameBoard = (function () {
   function getMarkAtPos(x, y) {
     return board[x][y];
   }
-  // TODO
+
   function gameState(x, y, mark) {
     // x and y are positions of our last move, mark is X or O
     // returns X wins or O wins or DRAW or CONTINUE
     console.log(`x: ${x}`);
     console.log(`y: ${y}`);
     console.log(`mark: ${mark}`);
+    console.log(`moveCount: ${moveCount}`);
     // check row
     for (let i = 0; i < n; i++) {
       if (board[x][i] != mark) break;
@@ -62,7 +60,7 @@ const gameBoard = (function () {
         if (i == n - 1) return `{mark WINS}`
       }
     }
-    if (moveCount == n * n - 1) {
+    if (moveCount == n * n) {
       return 'DRAW';
     }
     return 'CONTINUE';
@@ -162,8 +160,6 @@ const gameController = (function () {
     clearUI();
     renderGrid();
   }
-
-
   return { renderGrid, resetGame };
 })();
 
