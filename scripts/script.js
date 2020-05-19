@@ -131,18 +131,20 @@ const gameController = (function () {
     if (moveResult) {
       this.textContent = currentPlayer.mark;
       const state = gameBoard.gameState(Number(x), Number(y), currentPlayer.mark);
-
+      let msg = undefined;
       if (state === 'DRAW') {
-        alert("It's DRAW!");
-        resetGame();
+        msg = "It's a Draw!";
       } else if (state === 'CONTINUE') {
         toggleCurrentPlayer();
       } else if (state === `${playerOne.mark} WINS`) {
-        alert(`${playerOne.name} WINS!`);
-        resetGame();
+        msg = `${playerOne.name} wins!`;
       } else {
-        alert(`${playerTwo.name} WINS!`);
-        resetGame();
+        msg = `${playerTwo.name} wins!`;
+      }
+
+      if (msg) {
+        const display = generateMessageElement(msg);
+        document.body.appendChild(display);
       }
     }
   }
@@ -150,7 +152,9 @@ const gameController = (function () {
   function clearUI() {
     gameBoard.clear();
     const board = document.querySelector('.container');
+    const display = document.querySelector('.message-display');
     board.parentElement.removeChild(board);
+    document.body.removeChild(display);
   }
 
   function resetGame() {
@@ -167,6 +171,15 @@ const gameController = (function () {
 
   return { startGame, resetGame };
 })();
+
+function generateMessageElement(messageText) {
+  container = document.createElement('div');
+  container.setAttribute('class', 'message-display');
+  paragraph = document.createElement('p');
+  paragraph.textContent = messageText;
+  container.appendChild(paragraph);
+  return container;
+}
 
 document.getElementById('start-game')
   .addEventListener('click', gameController.startGame);

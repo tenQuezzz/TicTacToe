@@ -8,7 +8,7 @@
 
 .container {
   width: 80%;
-  height: 80vh;
+  height: 70vh;
 }
 
 .item {
@@ -33,4 +33,17 @@
   padding: 5px;
   border-radius: 10px;
   margin: 10px;
+}
+
+.message-display {
+  width: 80%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.message-display p {
+  font-weight: bold;
+  font-size: 3em;
+  color: tomato;
+  font-family: 'Pangolin', cursive;
 }
